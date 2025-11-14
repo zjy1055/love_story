@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Build folders
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Data and uploads
+data/
+uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Windows build files
+*.spec
+*.exe
+*.pkg
+
+# Testing
+.pytest_cache/
+coverage.xml
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

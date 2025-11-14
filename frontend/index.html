@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱故事记录 - 珍藏美好时光</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <i class="fas fa-heart"></i> 恋爱故事
+            </div>
+            <div class="navbar-menu">
+                <button class="menu-item" data-target="home">首页</button>
+                <button class="menu-item" data-target="events">事件记录</button>
+                <button class="menu-item" data-target="photos">照片管理</button>
+                <button class="menu-item" data-target="config">系统设置</button>
+            </div>
+            <div class="navbar-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu">
+        <button class="mobile-menu-item" data-target="home">首页</button>
+        <button class="mobile-menu-item" data-target="events">事件记录</button>
+        <button class="mobile-menu-item" data-target="photos">照片管理</button>
+        <button class="mobile-menu-item" data-target="config">系统设置</button>
+        <button class="mobile-menu-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- 页面内容容器 -->
+    <div class="page-container">
+        <!-- 首页 -->
+        <div class="page active" id="home">
+            <header class="hero-section">
+                <!-- 轮播图容器 -->
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <!-- 轮播图将通过JavaScript动态生成 -->
+                    </div>
+
+                    <div class="carousel-indicators"></div>
+                </div>
+            </header>
+
+            <!-- 纪念日倒计时 -->
+            <section class="countdown-section">
+                <h3>重要纪念日</h3>
+                <div class="countdown-container">
+                    <div class="countdown-item">
+                        <div class="countdown-title" id="relationship-title">确定关系</div>
+                        <div class="countdown-days" id="relationship-days">--</div>
+                        <div class="countdown-date" id="relationship-date">--</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-title" id="meeting-title">第一次见面</div>
+                        <div class="countdown-days" id="meeting-days">--</div>
+                        <div class="countdown-date" id="meeting-date">--</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 价值观与守则 -->
+            <section class="quotes-section">
+                <div class="quotes-container">
+                    <div class="quote-card">
+                        <h4>爱情宣言</h4>
+                        <p id="motto">爱是永恒的</p>
+                    </div>
+                    <div class="quote-card">
+                        <h4>共同价值观</h4>
+                        <p id="values">真诚<br>包容<br>成长</p>
+                    </div>
+                    <div class="quote-card">
+                        <h4>相处守则</h4>
+                        <p id="rules">相互理解<br>相互尊重<br>相互信任</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 最新事件 -->
+            <section class="recent-events">
+                <div class="section-header">
+                    <h3>最近事件</h3>
+                    <button class="btn-secondary" onclick="navigateTo('events')">查看全部</button>
+                </div>
+                <div class="events-grid" id="recent-events-grid">
+                    <!-- 动态生成的事件卡片 -->
+                </div>
+            </section>
+
+            <!-- 精选照片 -->
+        <section class="featured-photos">
+            <div class="section-header">
+                <h3>精选照片</h3>
+                <button class="btn-secondary" onclick="navigateTo('photos')">查看全部</button>
+            </div>
+            <div class="photos-grid" id="featured-photos-grid">
+                <!-- 动态生成的照片卡片 -->
+            </div>
+        </section>
+        </div>
+
+        <!-- 事件记录页面 -->
+        <div class="page" id="events">
+            <div class="page-header">
+                <h2>事件记录</h2>
+                <button class="btn-primary" id="add-event-btn">
+                    <i class="fas fa-plus"></i> 添加事件
+                </button>
+            </div>
+            
+            <div class="search-filter">
+                <input type="text" id="event-search" placeholder="搜索事件..." class="search-input">
+                <select id="event-filter" class="filter-select">
+                    <option value="all">全部事件</option>
+                    <option value="recent">最近添加</option>
+                    <option value="future">未来事件</option>
+                </select>
+            </div>
+            
+            <div class="events-container" id="events-container">
+                <!-- 事件列表 -->
+            </div>
+        </div>
+
+        <!-- 照片管理页面 -->
+        <div class="page" id="photos">
+            <div class="page-header">
+                <h2>照片管理</h2>
+                <div class="header-actions" style="display: flex; align-items: center;">
+                    <div class="search-bar" style="margin-right: 10px;">
+                        <input 
+                            type="text" 
+                            id="photo-quick-search" 
+                            placeholder="快速搜索照片..."
+                            style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px;"
+                        >
+                    </div>
+                    <button id="photo-search-btn" class="btn-secondary" style="margin-right: 10px;">
+                        <i class="fas fa-search"></i> 高级搜索
+                    </button>
+                    <button id="batch-upload-btn" class="btn-secondary" style="margin-right: 10px;">
+                        <i class="fas fa-images"></i> 批量上传
+                    </button>
+                    <button class="btn-primary" id="upload-photo-btn">
+                        <i class="fas fa-upload"></i> 上传照片
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 相册选择器 -->
+            <div class="album-selector">
+                <button class="album-btn active" data-album="all">全部照片</button>
+                <div id="albums-list">
+                    <!-- 动态生成的相册按钮 -->
+                </div>
+                <button class="btn-secondary" id="create-album-btn">
+                    <i class="fas fa-plus"></i> 新建相册
+                </button>
+            </div>
+            
+            <!-- 照片网格 -->
+            <div class="photos-container" id="photos-container">
+                <!-- 照片网格 -->
+            </div>
+        </div>
+
+        <!-- 系统设置页面 -->
+        <div class="page" id="config">
+            <div class="page-header">
+                <h2>系统设置</h2>
+            </div>
+            
+            <div class="settings-container">
+                <!-- 纪念日设置 -->
+                <div class="settings-section">
+                    <h3>纪念日设置</h3>
+                    <div class="setting-item">
+                        <label for="relationship_date">确定关系日期</label>
+                        <input type="date" id="relationship_date" class="setting-input">
+                    </div>
+                    <div class="setting-item">
+                        <label for="first_meeting_date">第一次见面日期</label>
+                        <input type="date" id="first_meeting_date" class="setting-input">
+                    </div>
+                </div>
+                
+                <!-- 个性化设置 -->
+                <div class="settings-section">
+                    <h3>个性化设置</h3>
+                    <div class="setting-item">
+                        <label for="motto_input">爱情宣言</label>
+                        <textarea id="motto_input" rows="3" class="setting-input"></textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label for="values_input">共同价值观</label>
+                        <textarea id="values_input" rows="3" class="setting-input"></textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label for="rules_input">相处守则</label>
+                        <textarea id="rules_input" rows="3" class="setting-input"></textarea>
+                    </div>
+                </div>
+                
+                <!-- 首页轮播图设置 -->
+                <div class="settings-section">
+                    <h3>首页轮播图设置</h3>
+                    <div class="carousel-manager">
+                        <div class="carousel-items" id="carousel-items-list">
+                            <!-- 轮播图项目将通过JavaScript动态生成 -->
+                            <p>加载轮播图中...</p>
+                        </div>
+                        <button id="add-carousel-item" class="btn-primary">
+                            <i class="fas fa-plus"></i> 添加轮播图
+                        </button>
+                    </div>
+                    <div class="help-text" style="margin-top: 10px;">
+                        <p>提示：您可以添加多个轮播图，它们会自动循环播放</p>
+                        <p>点击轮播图项目可以编辑，点击删除按钮可以移除</p>
+                    </div>
+                </div>
+                
+                <!-- 数据管理 -->
+                <div class="settings-section">
+                    <h3>数据管理</h3>
+                    <div class="backup-actions">
+                        <button class="btn-primary" id="backup-btn">
+                            <i class="fas fa-save"></i> 备份数据
+                        </button>
+                        <button class="btn-secondary" id="restore-btn">
+                            <i class="fas fa-undo"></i> 恢复数据
+                        </button>
+                        <span class="help-text" style="font-size: 0.9em; color: #666; margin-left: 10px;">系统最多保存100个备份</span>
+                        <input type="file" id="restore-file" accept=".db" style="display: none;">
+                    </div>
+                    
+                    <div class="backup-list" style="margin-top: 20px;">
+                        <h4>备份列表</h4>
+                        <div id="backup-list-container" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 10px;">
+                            <p>加载备份列表中...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-primary save-btn" id="save-settings">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 事件编辑模态框 -->
+    <div class="modal" id="event-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="event-modal-title">添加事件</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="event-id">
+                <div class="form-group">
+                    <label for="event-title">事件标题</label>
+                    <input type="text" id="event-title" class="form-control" placeholder="请输入事件标题">
+                </div>
+                <div class="form-group">
+                    <label for="event-date">事件日期</label>
+                    <input type="date" id="event-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="event-description">详细描述</label>
+                    <textarea id="event-description" rows="5" class="form-control" placeholder="请输入事件详细描述..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">取消</button>
+                <button class="btn-primary modal-save" id="save-event">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 照片上传模态框 -->
+    <div class="modal" id="photo-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>上传照片</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="photo-file">选择照片</label>
+                    <input type="file" id="photo-file" class="form-control" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="photo-description">照片描述</label>
+                    <textarea id="photo-description" rows="3" class="form-control" placeholder="请输入照片描述..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photo-date">拍摄日期</label>
+                    <input type="date" id="photo-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="photo-album">选择相册</label>
+                    <select id="photo-album" class="form-control">
+                        <option value="">不放入相册</option>
+                        <!-- 动态生成的相册选项 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="photo-event">关联事件</label>
+                    <select id="photo-event" class="form-control">
+                        <option value="">不关联事件</option>
+                        <!-- 动态生成的事件选项 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="photo-tags">标签（用逗号分隔）</label>
+                    <input type="text" id="photo-tags" class="form-control" placeholder="标签1,标签2,标签3">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">取消</button>
+                <button class="btn-primary modal-save" id="upload-photo">上传</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 相册创建模态框 -->
+    <div class="modal" id="album-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>创建相册</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="album-name">相册名称</label>
+                    <input type="text" id="album-name" class="form-control" placeholder="请输入相册名称">
+                </div>
+                <div class="form-group">
+                    <label for="album-description">相册描述</label>
+                    <textarea id="album-description" rows="3" class="form-control" placeholder="请输入相册描述..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">取消</button>
+                <button class="btn-primary modal-save" id="create-album">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 照片查看器模态框 -->
+    <div class="modal" id="photo-viewer">
+        <div class="modal-content photo-viewer-content">
+            <div class="modal-header">
+                <h3 id="current-photo-name"></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body photo-viewer-body">
+                <img id="large-photo" src="" alt="照片" class="large-photo">
+                <p id="photo-viewer-description" class="photo-description"></p>
+                <div id="photo-related-info" class="photo-related-info"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="prev-photo">上一张</button>
+                <button class="btn-secondary" id="next-photo">下一张</button>
+                <button class="btn-danger" id="delete-photo">删除照片</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量上传照片模态框 -->
+    <div class="modal" id="batch-upload-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>批量上传照片</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="batch-upload-form">
+                    <div class="form-group">
+                        <label for="batch-photo-files">选择照片 (可多选)</label>
+                        <input type="file" id="batch-photo-files" multiple accept="image/*" class="form-control">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="batch-photo-album">相册 (可选)</label>
+                            <select id="batch-photo-album" class="form-control">
+                                <option value="">不指定相册</option>
+                                <!-- 相册选项将动态添加 -->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="batch-photo-event">关联事件 (可选)</label>
+                            <select id="batch-photo-event" class="form-control">
+                                <option value="">不关联事件</option>
+                                <!-- 事件选项将动态添加 -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-cancel">取消</button>
+                        <button type="submit" class="btn-primary">开始上传</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 照片高级搜索模态框 -->
+    <div class="modal" id="photo-search-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>高级搜索照片</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="photo-search-form">
+                    <div class="form-group">
+                        <label for="search-photo-query">搜索关键词 (名称、描述或标签)</label>
+                        <input type="text" id="search-photo-query" class="form-control">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="search-photo-date-from">拍摄日期从</label>
+                            <input type="date" id="search-photo-date-from" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="search-photo-date-to">拍摄日期至</label>
+                            <input type="date" id="search-photo-date-to" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="search-photo-album">相册</label>
+                            <select id="search-photo-album" class="form-control">
+                                <option value="">不限相册</option>
+                                <!-- 相册选项将动态添加 -->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="search-photo-event">事件</label>
+                            <select id="search-photo-event" class="form-control">
+                                <option value="">不限事件</option>
+                                <!-- 事件选项将动态添加 -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="search-photo-tags">
+                        <label>标签</label>
+                        <div class="tags-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 10px;">
+                            <!-- 标签选项将动态添加 -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-cancel">取消</button>
+                        <button type="submit" class="btn-primary">搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知提示框 -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <span id="notification-message"></span>
+        </div>
+    </div>
+
+    <!-- JavaScript 文件 -->
+    <script src="scripts.js"></script>
+
+
+    </body>
+</html>
