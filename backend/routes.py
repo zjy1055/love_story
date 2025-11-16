@@ -605,25 +605,78 @@ def setup_routes(app):
     @app.route('/api/configs/<string:key>', methods=['GET'])
     def get_config(key):
         """获取单个配置信息"""
-        config = Config.query.filter_by(key=key).first_or_404()
-        return jsonify(config.to_dict())
+        # 首先记录请求日志
+        app.logger.info(f"Request for config key: {key}")
+        
+        try:
+            # 查询配置项
+            config = Config.query.filter_by(key=key).first()
+            
+            # 检查配置项是否存在
+            if config is None:
+                app.logger.warning(f"Config key not found: {key}")
+                return jsonify({'error': 'Configuration not found'}), 404
+            
+            # 尝试转换为字典并返回
+            try:
+                config_dict = config.to_dict()
+                return jsonify(config_dict), 200
+            except Exception as to_dict_error:
+                app.logger.error(f"Error converting config {key} to dict: {str(to_dict_error)}")
+                return jsonify({'error': 'Failed to process configuration data'}), 500
+        except Exception as e:
+            # 捕获所有其他异常
+            app.logger.error(f"Unexpected error getting config {key}: {str(e)}")
+            return jsonify({'error': 'An unexpected server error occurred'}), 500
     
     @app.route('/api/configs/<string:key>', methods=['PUT'])
     def update_config(key):
         """更新配置信息，如果配置不存在则创建新的配置项"""
-        config = Config.query.filter_by(key=key).first()
-        data = request.json
-        
-        if config:
-            # 更新现有配置
-            config.value = data.get('value', config.value)
-        else:
-            # 创建新的配置项
-            config = Config(key=key, value=data.get('value', ''))
-            db.session.add(config)
+        try:
+            data = request.json
+            if not data or 'value' not in data:
+                return jsonify({'error': 'Invalid request data'}), 400
             
-        db.session.commit()
-        return jsonify(config.to_dict())
+            # 获取要保存的值
+            value = data['value']
+            
+            # 特殊处理轮播图配置项
+            # 对于carousel_items，确保值是字符串格式的JSON
+            if key == 'carousel_items':
+                import json
+                # 如果值已经是对象或数组，转换为JSON字符串
+                if isinstance(value, (dict, list)):
+                    value = json.dumps(value)
+                # 如果已经是JSON字符串，保持原样
+                elif isinstance(value, str) and (
+                    (value.startswith('{') and value.endswith('}')) or
+                    (value.startswith('[') and value.endswith(']'))
+                ):
+                    # 验证是否为有效的JSON
+                    try:
+                        json.loads(value)
+                    except json.JSONDecodeError:
+                        return jsonify({'error': 'Invalid JSON format for carousel_items'}), 400
+            
+            # 查找配置项
+            config = Config.query.filter_by(key=key).first()
+            
+            # 如果不存在，创建新的配置项
+            if not config:
+                config = Config(key=key, value=value)
+                db.session.add(config)
+            else:
+                # 更新现有配置
+                config.value = value
+            
+            # 保存更改
+            db.session.commit()
+            
+            return jsonify(config.to_dict()), 200
+        except Exception as e:
+            app.logger.error(f"Error updating config {key}: {str(e)}")
+            db.session.rollback()
+            return jsonify({'error': 'Internal Server Error'}), 500
     
     # ===== 数据备份与恢复API =====
     

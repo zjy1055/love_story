@@ -1,14 +1,18 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# cSpell:ignore onupdate backref  (SQLAlchemy特殊参数名)
 
 """
 恋爱故事记录应用 - 数据库模型
 """
 
+import logging
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+
+# 配置日志
+logger = logging.getLogger(__name__)
 
 # 创建SQLAlchemy实例
 db = SQLAlchemy()
@@ -119,11 +123,32 @@ class Config(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def to_dict(self):
-        """转换为字典格式"""
+        """转换为字典格式，自动解析JSON格式的value字段"""
+        value = self.value
+        
+        # 尝试将value解析为JSON对象，特别是对于需要结构化数据的配置项
+        # 主要针对carousel_items和其他可能是JSON字符串的配置项
+        # 增强对JSON字符串的检测和解析能力
+        json_keys = ['carousel_items', 'values', 'rules']
+        
+        # 首先确保value是字符串类型
+        if isinstance(value, str):
+            # 对于已知的JSON配置项，强制尝试解析
+            if self.key in json_keys or value.strip().startswith('{') or value.strip().startswith('['):
+                try:
+                    import json
+                    # 处理可能存在的Unicode转义字符和多余空格
+                    clean_value = value.strip()
+                    value = json.loads(clean_value)
+                except (json.JSONDecodeError, TypeError):
+                    # 如果不是有效的JSON，保持原始值
+                    logger.warning(f"Failed to parse JSON for config key '{self.key}': {value}")
+                    pass
+        
         return {
             'id': self.id,
             'key': self.key,
-            'value': self.value,
+            'value': value,
             'description': self.description,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }

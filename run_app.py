@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -19,6 +18,7 @@ if __name__ == '__main__':
     # 检查是否为打包后的应用
     if hasattr(sys, '_MEIPASS'):
         # 打包模式下使用相对路径
+        # cSpell:ignore MEIPASS  (PyInstaller临时目录属性)
         static_folder = os.path.join(sys._MEIPASS, 'frontend')
         app.static_folder = static_folder
         app.static_url_path = '/static'

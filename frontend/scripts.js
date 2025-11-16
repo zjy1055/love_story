@@ -260,9 +260,23 @@ function loadHomePageData() {
             carouselItems = [];
             
             try {
-                // 尝试从JSON格式的carousel_items配置中加载多张轮播图
-                if (configMap.carousel_items && configMap.carousel_items.trim()) {
-                    carouselItems = JSON.parse(configMap.carousel_items);
+                // 简化的轮播图数据解析逻辑
+                const carouselData = configMap.carousel_items;
+                if (carouselData) {
+                    // 直接检查类型，避免链式调用导致的错误
+                    if (Array.isArray(carouselData)) {
+                        // 如果已经是数组，直接使用
+                        carouselItems = carouselData;
+                    } else if (typeof carouselData === 'string') {
+                        // 只对字符串类型尝试解析
+                        const trimmedData = carouselData.trim();
+                        if (trimmedData) {
+                            carouselItems = JSON.parse(trimmedData);
+                        }
+                    } else if (typeof carouselData === 'object' && carouselData !== null) {
+                        // 处理对象类型数据
+                        carouselItems = [carouselData]; // 转换为数组
+                    }
                 }
             } catch (e) {
                 console.error('解析轮播图数据失败:', e);
@@ -1169,9 +1183,23 @@ function loadConfig() {
             // 加载轮播图数据
             carouselItems = [];
             try {
-                // 尝试从JSON格式的carousel_items配置中加载多张轮播图
-                if (configMap.carousel_items && configMap.carousel_items.trim()) {
-                    carouselItems = JSON.parse(configMap.carousel_items);
+                // 简化的轮播图数据解析逻辑
+                const carouselData = configMap.carousel_items;
+                if (carouselData) {
+                    // 直接检查类型，避免链式调用导致的错误
+                    if (Array.isArray(carouselData)) {
+                        // 如果已经是数组，直接使用
+                        carouselItems = carouselData;
+                    } else if (typeof carouselData === 'string') {
+                        // 只对字符串类型尝试解析
+                        const trimmedData = carouselData.trim();
+                        if (trimmedData) {
+                            carouselItems = JSON.parse(trimmedData);
+                        }
+                    } else if (typeof carouselData === 'object' && carouselData !== null) {
+                        // 处理对象类型数据
+                        carouselItems = [carouselData]; // 转换为数组
+                    }
                 } else if (configMap.carousel_image_url) {
                     // 如果没有carousel_items但有单个轮播图配置，转换为新格式
                     carouselItems.push({
